@@ -24,3 +24,124 @@ You don't need a CS degree to write a programing language, you just need to unde
 1. Lexing
 2. Parsing
 3. Interpretering
+
+---
+
+# Lexer
+
+*"In computer science, lexical analysis is the process of converting a sequence of characters into a sequence of tokens (strings with an identified "meaning"). A program that performs lexical analysis may be called a lexer, tokenizer,[1] or scanner (though "scanner" is also used to refer to the first stage of a lexer). Such a lexer is generally combined with a parser, which together analyze the syntax of programming languages..."* *-Wikipedia*
+
+The idea is to transform an array of charaters into an array of tokens (strings with an identified "meaning")
+
+## Example:
+![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Lexer.xcplaygroundpage/Resources/lexer.png)
+
+Because `microraptor` is so small--only one character operator and numbers--you can simply iterate over the input and check each character.
+
+```ts
+
+function tokenize(input: String): Token[] {
+  return [...input]
+    .filter(t => t !== ' ')
+    .map((char) => {
+    switch (char) {
+      case '(':
+        return { kind: TokenKind.ParensOpen }
+      case ')':
+        return { kind: TokenKind.ParensClose }
+      case 's':
+        return { kind: TokenKind.Operator, value: char}
+      default:
+        const num = parseInt(char)
+        if(!isNaN(num)) {
+          return {kind: TokenKind.NumberToken, value: num }
+        }
+    }
+
+    throw new Error(`Character '${char}' is not identified`);
+    
+  })
+}
+
+const input = "(s (s 4 5) 4)"
+const tokens = tokenize(input)
+```
+
+---
+# Parser
+
+*Parsing or syntactic analysis is the process of analysing a string of symbols, either in natural language or in computer languages, conforming to the rules of a formal grammar...* *-Wikipedia*
+
+## Grammar:
+
+`expression: parensOpen operator primaryExpression primaryExpression parensClose`
+
+`primaryExpression: expression | number`
+
+`parensOpen: "("`
+
+`parensClose: ")"`
+
+`operator: "s"`
+  
+`number: [0-9]`
+
+`microraptor`'s grammar is a context-free grammar, that means it describes all possible strings in the language. 
+The parser will start from the top (root of the generated tree) and it will go until the lowest node. 
+
+```ts
+class Parser {
+  tokens: Token[]
+
+  constructor(tokens: Token[]) {
+    this.tokens = tokens
+  }
+
+  parsePrimaryExpression(): PrimaryExpressionNode {
+    let expression: PrimaryExpressionNode | null = null
+
+    switch (this.tokens[0].kind) {
+      case TokenKind.NumberToken:
+        expression = { kind: PrimaryExpressionNodeKind.number, value: this.tokens[0].value as number }
+        this.tokens.shift()
+        break;
+      case TokenKind.ParensOpen:
+        const value = this.parse()
+        expression = { kind: PrimaryExpressionNodeKind.expression, value }
+        break;
+    }
+
+    return expression!
+  }
+
+  parse(): ExpressionNode {
+    const tokenOpen = this.tokens.shift()!
+
+    if (tokenOpen.kind !== TokenKind.ParensOpen) {
+      throw new Error("Unexpected token");    
+    }
+
+    const tokenOperator = this.tokens.shift()!
+    const operator = tokenOperator.value!.toString()
+
+    if (tokenOperator.kind !== TokenKind.Operator) {
+      throw new Error("Unexpected token");    
+    }
+
+    let leftSideExpression = this.parsePrimaryExpression()
+    let rightSideExpression = this.parsePrimaryExpression()
+
+    const tokenParensClose = this.tokens.shift()!
+
+    if (tokenParensClose.kind !== TokenKind.ParensClose) {
+      throw new Error("Unexpected token");    
+    }
+
+
+    return { operator, leftSideExpression, rightSideExpression }
+  }
+}
+
+const parser = new Parser(tokens)
+
+```
