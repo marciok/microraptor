@@ -189,7 +189,7 @@ console.log(interpreter(ast))
 # Conclusion
 ![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Conclusion.xcplaygroundpage/Resources/complete-flow.png)
 - Given an input
-`const input = "(s (s 4 5) 4)`
+`const input = "(s (s 4 5) 4)"`
 - Extract an array of tokens (Lexing)
 `const tokens = tokenize(input)`
 - Parse the given tokens into a tree (Parsing)
