@@ -145,3 +145,63 @@ class Parser {
 const parser = new Parser(tokens)
 
 ```
+---
+
+# Interpreter
+
+*"In computer science, an interpreter is a computer program that directly executes, i.e. performs, instructions written in a programming or scripting language, without previously compiling them into a machine language program."* *-Wikipedia*
+
+
+## Example:
+`mucriraptor`'s interpreter will walk through its A.S.T and compute a value by applying an operator to the children nodes.  
+
+![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Interpreter.xcplaygroundpage/Resources/simple-ast.png)
+
+```ts
+function evaluate(primaryExpression: PrimaryExpressionNode): number {
+  switch (primaryExpression.kind) {
+    case PrimaryExpressionNodeKind.expression:
+      return interpreter(primaryExpression.value as ExpressionNode)
+    case PrimaryExpressionNodeKind.number:
+      return primaryExpression.value as number
+  }
+  
+}
+
+function interpreter(expression: ExpressionNode): number {
+  const firstEval = evaluate(expression.leftSideExpression)
+  const secondEval = evaluate(expression.rightSideExpression)
+
+  if (expression.operator == "s") {
+    return firstEval + secondEval
+  }
+
+  throw new Error("Unknow operator");
+}
+
+const tokens = tokenize('(s 8 (s 7 9))')
+const parser = new Parser(tokens)
+const ast = parser.parse()
+console.log(interpreter(ast))
+```
+---
+
+# Conclusion
+![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Conclusion.xcplaygroundpage/Resources/complete-flow.png)
+- Given an input
+`const input = "(s (s 4 5) 4)`
+- Extract an array of tokens (Lexing)
+`const tokens = tokenize(input)`
+- Parse the given tokens into a tree (Parsing)
+~~~
+const parser = new Parser(tokens)
+const ast = parser.parse()
+~~~
+ - And walk through this tree, and compute the values contained inside a node (Interpreting)
+ `const result = interpreter(ast)`
+ 
+ ### Resources
+ 
+ - https://ruslanspivak.com/lsbasi-part1/
+ - https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811
+ - http://llvm.org/docs/tutorial/
