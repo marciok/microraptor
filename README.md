@@ -1,6 +1,6 @@
 # microraptor 🦖
 
-A tutorial on how to write a (tiny) programming language using Typescript.
+A tutorial on how to write a (tiny) programming language using Typescript + [Deno](https://deno.land/).
 
 microraptor is a minimal language consisted by a postfix operator, a binary operation and one digit numbers.
 
