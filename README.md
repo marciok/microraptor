@@ -34,7 +34,7 @@ You don't need a CS degree to write a programing language, you just need to unde
 The idea is to transform an array of charaters into an array of tokens (strings with an identified "meaning")
 
 ## Example:
-![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Lexer.xcplaygroundpage/Resources/lexer.png)
+![Input](https://user-images.githubusercontent.com/311156/200147193-a8e32d39-77f4-44a9-8c14-444cf035c584.png)
 
 Because `microraptor` is so small--only one character operator and numbers--you can simply iterate over the input and check each character.
 
@@ -155,7 +155,8 @@ const parser = new Parser(tokens)
 ## Example:
 `mucriraptor`'s interpreter will walk through its A.S.T and compute a value by applying an operator to the children nodes.  
 
-![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Interpreter.xcplaygroundpage/Resources/simple-ast.png)
+![ast](https://user-images.githubusercontent.com/311156/200148108-9fb50cff-55dc-46ad-b1ce-fea54a1ddc35.jpg)
+
 
 ```ts
 function evaluate(primaryExpression: PrimaryExpressionNode): number {
@@ -187,7 +188,10 @@ console.log(interpreter(ast))
 ---
 
 # Conclusion
-![Alt text](https://raw.githubusercontent.com/marciok/Mu/master/WriteYourLanguage.playground/Pages/Conclusion.xcplaygroundpage/Resources/complete-flow.png)
+
+![microraptor](https://user-images.githubusercontent.com/311156/200148129-81997230-65d0-420f-8e91-e18a92235ab2.jpg)
+
+
 - Given an input
 `const input = "(s (s 4 5) 4)"`
 - Extract an array of tokens (Lexing)
